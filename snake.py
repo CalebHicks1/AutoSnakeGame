@@ -82,7 +82,7 @@ def make_snake():
     elif direction == 'R':
         pygame.draw.rect(dis, white, [x_pos, y_pos, 30, 25])
     elif direction == 'L':
-        pygame.draw.rect(dis, white, [x_pos, y_pos, 30, 25])
+        pygame.draw.rect(dis, white, [x_pos-5, y_pos, 30, 25])
     body_x.append(x_pos)
     body_y.append(y_pos)
     body_pos.append('%d,%d' % (x_pos, y_pos))
