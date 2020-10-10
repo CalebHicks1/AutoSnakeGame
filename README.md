@@ -5,7 +5,7 @@ TO PLAY:
 
 On Linux, activate snake-env with:
 
-$source snake-env/bin/activate
+$source newEnv/bin/activate
 
 then run snake.py:
 
