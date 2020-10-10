@@ -76,7 +76,7 @@ def make_snake():
         remove_tail(body_x.pop(0), body_y.pop(0))
         body_pos.pop(0)
     if direction == 'U':
-        pygame.draw.rect(dis, white, [x_pos, y_pos, 25, 30])
+        pygame.draw.rect(dis, white, [x_pos, y_pos-5, 25, 30])
     elif direction == 'D':
         pygame.draw.rect(dis, white, [x_pos, y_pos, 25, 30])
     elif direction == 'R':
