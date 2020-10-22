@@ -7,7 +7,7 @@ width = 600
 height = 600
 game_over = False
 MAKESNAKE = pygame.USEREVENT + 1
-timer = pygame.time.set_timer(MAKESNAKE, 250)
+timer = pygame.time.set_timer(MAKESNAKE, 100)
 x_pos = width // 2
 y_pos = height // 2
 white = (255,255,255)
@@ -128,7 +128,7 @@ def solve():
         y_dir_to_apple = 'D'
     else:
         y_dir_to_apple = 'U'
-    if direction != x_dir_to_apple or direction != y_dir_to_apple:
+    if direction != x_dir_to_apple or direction != y_dir_to_apple or going_off_edge():
         change_direction()
 
 def change_direction():
@@ -140,40 +140,53 @@ def change_direction():
     global y_pos
     if x_pos > apple_x:
         if direction != 'R':
+            print("direction: L")
             direction = 'L'
-            print("direction: ", direction)
         else:
+            print("direction: U")
             direction = 'U'
-            print("direction: ", direction)
     elif x_pos < apple_x:
         if direction != 'L':
+            print("direction: R")
             direction = 'R'
-            print("direction: ", direction)
         else:
+            print("direction: U")
             direction = 'U'
-            print("direction: ", direction)
     elif y_pos > apple_y:
         if direction != 'D':
+            print("direction: U")
             direction = 'U'
-            print("direction: ", direction)
         else:
+            print("direction: R")
             direction = 'R'
-            print("direction: ", direction)
     elif y_pos < apple_y:
         if direction != 'U':
+            print("direction: D")
             direction = 'D'
-            print("direction: ", direction)
         else:
+            print("direction: R")
             direction = 'R'
-            print("direction: ", direction)
     direction = clear()
 
 def going_off_edge():
+    print("going_off_edge()")
     if direction == 'U':
         if y_pos - 30 == 0:
+            return True
+    if direction == 'D':
+        if y_pos + 30 == height:
+            return True
+    if direction == 'R':
+        if x_pos + 30 == width:
+            return True
+    if direction == 'U':
+        if x_pos - 30 == 0:
+            return True
 
-#tells if the space in front of snake is clear.
-#If not, it checks the two perpendicular directions.
+"""
+tells if the space in front of snake is clear.
+If not, it checks the two perpendicular directions.
+"""
 def clear():
     print('clear()')
     if direction == 'U':
