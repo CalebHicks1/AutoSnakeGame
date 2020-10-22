@@ -76,7 +76,7 @@ def make_snake():
         remove_tail(body_x.pop(0), body_y.pop(0))
         body_pos.pop(0)
     if direction == 'U':
-        pygame.draw.rect(dis, white, [x_pos, y_pos-5, 25, 30]) 
+        pygame.draw.rect(dis, white, [x_pos, y_pos-5, 25, 30])
     elif direction == 'D':
         pygame.draw.rect(dis, white, [x_pos, y_pos, 25, 30])
     elif direction == 'R':
@@ -110,6 +110,106 @@ def move_apple():
     pygame.draw.rect(dis, red, [apple_x, apple_y,25,25])
     print(apple_x,apple_y)
 
+def solve():
+    print('solve()')
+    global direction
+    global apple_x
+    global apple_y
+    global x_pos
+    global y_pos
+    # Setup variables to locate apple.
+    x_dir_to_apple = 'R'
+    y_dir_to_apple = 'U'
+    if apple_x > x_pos:
+        x_dir_to_apple = 'R'
+    else:
+        x_dir_to_apple = 'L'
+    if apple_y > y_pos:
+        y_dir_to_apple = 'D'
+    else:
+        y_dir_to_apple = 'U'
+    if direction != x_dir_to_apple or direction != y_dir_to_apple:
+        change_direction()
+
+def change_direction():
+    print('change_direction()')
+    global direction
+    global apple_x
+    global apple_y
+    global x_pos
+    global y_pos
+    if x_pos > apple_x:
+        if direction != 'R':
+            direction = 'L'
+            print("direction: ", direction)
+        else:
+            direction = 'U'
+            print("direction: ", direction)
+    elif x_pos < apple_x:
+        if direction != 'L':
+            direction = 'R'
+            print("direction: ", direction)
+        else:
+            direction = 'U'
+            print("direction: ", direction)
+    elif y_pos > apple_y:
+        if direction != 'D':
+            direction = 'U'
+            print("direction: ", direction)
+        else:
+            direction = 'R'
+            print("direction: ", direction)
+    elif y_pos < apple_y:
+        if direction != 'U':
+            direction = 'D'
+            print("direction: ", direction)
+        else:
+            direction = 'R'
+            print("direction: ", direction)
+    direction = clear()
+
+def going_off_edge():
+    if direction == 'U':
+        if y_pos - 30 == 0:
+
+#tells if the space in front of snake is clear.
+#If not, it checks the two perpendicular directions.
+def clear():
+    print('clear()')
+    if direction == 'U':
+        if '%d,%d' % (x_pos, y_pos - 30) not in body_pos and y_pos -30 > 0:
+            return direction
+        else:
+            if '%d,%d' % (x_pos + 30, y_pos) not in body_pos:
+                return 'R'
+            else:
+                return 'L'
+    if direction == 'D':
+        if '%d,%d' % (x_pos, y_pos + 30) not in body_pos and y_pos +30 < height:
+            return direction
+        else:
+            if '%d,%d' % (x_pos + 30, y_pos) not in body_pos:
+                return 'R'
+            else:
+                return 'L'
+    if direction == 'R':
+        if '%d,%d' % (x_pos + 30, y_pos) not in body_pos:
+            return direction
+        else:
+            if '%d,%d' % (x_pos, y_pos + 30) not in body_pos:
+                return 'D'
+            else:
+                return 'U'
+    if direction == 'L':
+        if '%d,%d' % (x_pos - 30, y_pos) not in body_pos and x_pos - 30 > 0:
+            return direction
+        else:
+            if '%d,%d' % (x_pos, y_pos + 30) not in body_pos and x_pos + 30 < width:
+                return 'D'
+            else:
+                return 'U'
+
+
 # ~ Gameplay Loop ------------------------------------------------------
 
 move_apple()
@@ -130,6 +230,7 @@ while not game_over:
                 grow_time = 0
         if event.type == MAKESNAKE:
             make_snake()
+            solve()
         pygame.display.update()
 pygame.quit()
 quit()
