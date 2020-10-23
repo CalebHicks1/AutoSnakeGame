@@ -58,8 +58,10 @@ def move():
     elif direction == 'L':
         x_pos -= 30
     if x_pos < 0 or x_pos >= width:
+        print("Off horizontal edge")
         game_over = True
     elif y_pos < 0 or y_pos >= height:
+        print("Off vertical edge")
         game_over = True
     if '%d,%d'%(x_pos,y_pos) in body_pos:
         game_over = True
@@ -252,8 +254,8 @@ while not game_over:
             elif event.key == pygame.K_SPACE:
                 grow_time = 0
         if event.type == MAKESNAKE:
-            make_snake()
             solve()
+            make_snake()
         pygame.display.update()
 pygame.quit()
 quit()
