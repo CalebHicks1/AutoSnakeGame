@@ -191,7 +191,7 @@ If not, it checks the two perpendicular directions.
 def clear():
     print('clear()', direction)
     if direction == 'U':
-        if '%d,%d' % (x_pos, y_pos - 30) not in body_pos and y_pos -30 > 0:
+        if '%d,%d' % (x_pos, y_pos - 30) not in body_pos and y_pos - 30 > 0:
             print(direction)
             return direction
         else:
@@ -202,7 +202,7 @@ def clear():
                 print("L")
                 return 'L'
     elif direction == 'D':
-        if '%d,%d' % (x_pos, y_pos + 30) not in body_pos and y_pos +30 < height:
+        if '%d,%d' % (x_pos, y_pos + 30) not in body_pos and y_pos + 30 < height:
             return direction
         else:
             if '%d,%d' % (x_pos + 30, y_pos) not in body_pos:
