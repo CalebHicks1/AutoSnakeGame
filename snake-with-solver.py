@@ -128,7 +128,7 @@ def solve():
         y_dir_to_apple = 'D'
     else:
         y_dir_to_apple = 'U'
-    if direction != x_dir_to_apple or direction != y_dir_to_apple or going_off_edge():
+    if going_off_edge() or direction != x_dir_to_apple or direction != y_dir_to_apple:
         change_direction()
 
 def change_direction():
@@ -167,6 +167,7 @@ def change_direction():
             print("direction: R")
             direction = 'R'
     direction = clear()
+    print(direction)
 
 def going_off_edge():
     print("going_off_edge()")
@@ -174,10 +175,10 @@ def going_off_edge():
         if y_pos - 30 == 0:
             return True
     if direction == 'D':
-        if y_pos + 30 == height:
+        if not y_pos + 30 < height:
             return True
     if direction == 'R':
-        if x_pos + 30 == width:
+        if not x_pos + 30 < width:
             return True
     if direction == 'U':
         if x_pos - 30 == 0:
@@ -188,38 +189,47 @@ tells if the space in front of snake is clear.
 If not, it checks the two perpendicular directions.
 """
 def clear():
-    print('clear()')
+    print('clear()', direction)
     if direction == 'U':
         if '%d,%d' % (x_pos, y_pos - 30) not in body_pos and y_pos -30 > 0:
+            print(direction)
             return direction
         else:
             if '%d,%d' % (x_pos + 30, y_pos) not in body_pos:
+                print("R")
                 return 'R'
             else:
+                print("L")
                 return 'L'
-    if direction == 'D':
+    elif direction == 'D':
         if '%d,%d' % (x_pos, y_pos + 30) not in body_pos and y_pos +30 < height:
             return direction
         else:
             if '%d,%d' % (x_pos + 30, y_pos) not in body_pos:
+                print("R")
                 return 'R'
             else:
+                print("L")
                 return 'L'
-    if direction == 'R':
-        if '%d,%d' % (x_pos + 30, y_pos) not in body_pos:
+    elif direction == 'R':
+        if '%d,%d' % (x_pos + 30, y_pos) not in body_pos and x_pos + 30 < width:
             return direction
         else:
             if '%d,%d' % (x_pos, y_pos + 30) not in body_pos:
+                print("D")
                 return 'D'
             else:
+                print("U")
                 return 'U'
-    if direction == 'L':
+    elif direction == 'L':
         if '%d,%d' % (x_pos - 30, y_pos) not in body_pos and x_pos - 30 > 0:
             return direction
         else:
-            if '%d,%d' % (x_pos, y_pos + 30) not in body_pos and x_pos + 30 < width:
+            if '%d,%d' % (x_pos, y_pos + 30) not in body_pos:
+                print("D")
                 return 'D'
             else:
+                print("U")
                 return 'U'
 
 
