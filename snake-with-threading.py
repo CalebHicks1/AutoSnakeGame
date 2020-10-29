@@ -1,10 +1,11 @@
 import pygame
 import random
+import threading
 
 # ~ Initialize --------------------------------------------------------
 
-width = 600
-height = 600
+width = 300
+height = 300
 game_over = False
 MAKESNAKE = pygame.USEREVENT + 1
 timer = pygame.time.set_timer(MAKESNAKE, 250)
@@ -21,6 +22,8 @@ growing = True
 grow_time = 0
 apple_x = 0
 apple_y = 0
+apple_found = False
+directions = []
 
 pygame.init()
 dis = pygame.display.set_mode((width,height))
@@ -110,6 +113,51 @@ def move_apple():
     pygame.draw.rect(dis, red, [apple_x, apple_y,25,25])
     print(apple_x,apple_y)
 
+def start_threads(thread_color, prev_moves, dir_list, curr_x, curr_y):
+    if apple_found:
+        return
+
+    u_thread = threading.Thread(target=thread_action, args=('U', prev_moves, dir_list, curr_x, curr_y, thread_color))
+
+    d_thread = threading.Thread(target=thread_action, args=('D', prev_moves, dir_list, curr_x, curr_y, thread_color))
+
+    r_thread = threading.Thread(target=thread_action, args=('R', prev_moves, dir_list, curr_x, curr_y, thread_color))
+
+    l_thread = threading.Thread(target=thread_action, args=('L', prev_moves, dir_list, curr_x, curr_y, thread_color))
+
+    u_thread.start()
+    d_thread.start()
+    r_thread.start()
+    l_thread.start()
+
+def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
+    global apple_found
+    global directions
+    if apple_found:
+        return
+    if dir == 'U':
+        new_move = [curr_x, curr_y+30]
+    elif dir == 'D':
+        new_move = [curr_x, curr_y-30]
+    elif dir == 'R':
+        new_move = [curr_x+30, curr_y]
+    elif dir == 'L':
+        new_move = [curr_x-30, curr_y]
+    if new_move == [apple_x, apple_y]:
+        apple_found = True
+        directions = dir_list
+    if new_move in prev_moves:
+        return
+    else:
+        moves = prev_moves
+        moves.append(new_move)
+        move_list = dir_list
+        move_list.append(dir)
+        thread_color = (random.randint(0,255), random.randint(0,255), random.randint(0,255))
+        start_threads(thread_color, moves, move_list, new_move[0], new_move[1])
+        pygame.draw.rect(dis, color, [curr_x, curr_y, 30, 30])
+        pygame.display.update()
+
 # ~ Gameplay Loop ------------------------------------------------------
 
 move_apple()
@@ -117,19 +165,13 @@ while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_over = True
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT and direction != 'R':
-                direction = 'L'
-            elif event.key == pygame.K_RIGHT and direction != 'L':
-                direction = 'R'
-            elif event.key == pygame.K_DOWN and direction != 'U':
-                direction = 'D'
-            elif event.key == pygame.K_UP and direction != 'D':
-                direction = 'U'
-            elif event.key == pygame.K_SPACE:
-                grow_time = 0
         if event.type == MAKESNAKE:
-            make_snake()
+            if apple_found:
+                print(directions)
+                direction = directions.pop(0)
+                make_snake()
+            else:
+                start_threads((0,255,0), body_pos, [], x_pos, y_pos)
         pygame.display.update()
 pygame.quit()
 quit()
