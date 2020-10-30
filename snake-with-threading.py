@@ -4,8 +4,8 @@ import threading
 
 # ~ Initialize --------------------------------------------------------
 
-width = 300
-height = 300
+width = 600
+height = 600
 game_over = False
 MAKESNAKE = pygame.USEREVENT + 1
 timer = pygame.time.set_timer(MAKESNAKE, 250)
@@ -136,9 +136,9 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
     if apple_found:
         return
     if dir == 'U':
-        new_move = [curr_x, curr_y+30]
-    elif dir == 'D':
         new_move = [curr_x, curr_y-30]
+    elif dir == 'D':
+        new_move = [curr_x, curr_y+30]
     elif dir == 'R':
         new_move = [curr_x+30, curr_y]
     elif dir == 'L':
@@ -155,7 +155,7 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         move_list.append(dir)
         thread_color = (random.randint(0,255), random.randint(0,255), random.randint(0,255))
         start_threads(thread_color, moves, move_list, new_move[0], new_move[1])
-        pygame.draw.rect(dis, color, [curr_x, curr_y, 30, 30])
+        pygame.draw.rect(dis, color, [curr_x, curr_y, 25, 25])
         pygame.display.update()
 
 # ~ Gameplay Loop ------------------------------------------------------
@@ -169,6 +169,7 @@ while not game_over:
             if apple_found:
                 print(directions)
                 direction = directions.pop(0)
+                print(threading.active_count())
                 make_snake()
             else:
                 start_threads((0,255,0), body_pos, [], x_pos, y_pos)
