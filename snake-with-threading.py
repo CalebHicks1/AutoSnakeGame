@@ -6,8 +6,8 @@ import copy
 
 # ~ Initialize --------------------------------------------------------
 
-width = 600
-height = 600
+width = 300
+height = 300
 game_over = False
 MAKESNAKE = pygame.USEREVENT + 1
 timer = pygame.time.set_timer(MAKESNAKE, 150)
@@ -144,7 +144,6 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
     global apple_found
     global directions
     if apple_found:
-        print('it was found')
         return
     if dir == 'U':
         new_move = [curr_x, curr_y-30]
@@ -163,10 +162,9 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         return
     if new_move in prev_moves:
         return
-    elif new_move[0] > width or new_move[0] < 0:
+    elif new_move[0] > width - 30 or new_move[0] < 0:
         return
-    elif new_move[1] > height or new_move[1] < 0:
-        print('went off edge')
+    elif new_move[1] > height -30 or new_move[1] < 0:
         return
     else:
         tl.moves = copy.deepcopy(prev_moves)
@@ -175,7 +173,7 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         tl.move_list.append(dir)
         pygame.draw.rect(dis, color, [curr_x, curr_y, 25, 25])
         pygame.display.update()
-        print(len(tl.moves))
+        print('thread length: ', len(tl.move_list))
         if len(tl.moves) > 25:
             return
         start_threads(color, tl.moves, tl.move_list, new_move[0], new_move[1])
