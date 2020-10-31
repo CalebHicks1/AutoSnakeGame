@@ -1,6 +1,8 @@
 import pygame
 import random
 import threading
+import time
+import copy
 
 # ~ Initialize --------------------------------------------------------
 
@@ -8,7 +10,7 @@ width = 600
 height = 600
 game_over = False
 MAKESNAKE = pygame.USEREVENT + 1
-timer = pygame.time.set_timer(MAKESNAKE, 250)
+timer = pygame.time.set_timer(MAKESNAKE, 150)
 x_pos = width // 2
 y_pos = height // 2
 white = (255,255,255)
@@ -24,6 +26,7 @@ apple_x = 0
 apple_y = 0
 apple_found = False
 directions = []
+tl = threading.local()
 
 pygame.init()
 dis = pygame.display.set_mode((width,height))
@@ -101,6 +104,8 @@ moves the apple to a random place on the screen.
 position is a multiple of 30 so that it is in the same grid as the snake
 """
 def move_apple():
+    global apple_found
+    apple_found = False
     global apple_x
     global apple_y
     apple_x = random.randint(1, (width-30) // 30)
@@ -113,17 +118,22 @@ def move_apple():
     pygame.draw.rect(dis, red, [apple_x, apple_y,25,25])
     print(apple_x,apple_y)
 
+def start_thread(dir, color, prev_moves, dir_list, curr_x, curr_y):
+    thread = threading.Thread(target=thread_action, args=(dir, prev_moves, dir_list, curr_x, curr_y, color))
+    thread.start()
+
 def start_threads(thread_color, prev_moves, dir_list, curr_x, curr_y):
     if apple_found:
         return
 
-    u_thread = threading.Thread(target=thread_action, args=('U', prev_moves, dir_list, curr_x, curr_y, thread_color))
+    tl.moves = copy.deepcopy(prev_moves)
+    u_thread = threading.Thread(target=thread_action, args=('U', tl.moves, dir_list, curr_x, curr_y, thread_color))
 
-    d_thread = threading.Thread(target=thread_action, args=('D', prev_moves, dir_list, curr_x, curr_y, thread_color))
+    d_thread = threading.Thread(target=thread_action, args=('D', tl.moves, dir_list, curr_x, curr_y, thread_color))
 
-    r_thread = threading.Thread(target=thread_action, args=('R', prev_moves, dir_list, curr_x, curr_y, thread_color))
+    r_thread = threading.Thread(target=thread_action, args=('R', tl.moves, dir_list, curr_x, curr_y, thread_color))
 
-    l_thread = threading.Thread(target=thread_action, args=('L', prev_moves, dir_list, curr_x, curr_y, thread_color))
+    l_thread = threading.Thread(target=thread_action, args=('L', tl.moves, dir_list, curr_x, curr_y, thread_color))
 
     u_thread.start()
     d_thread.start()
@@ -134,6 +144,7 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
     global apple_found
     global directions
     if apple_found:
+        print('it was found')
         return
     if dir == 'U':
         new_move = [curr_x, curr_y-30]
@@ -145,18 +156,29 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         new_move = [curr_x-30, curr_y]
     if new_move == [apple_x, apple_y]:
         apple_found = True
-        directions = dir_list
+        print('found')
+        tl.move_list = copy.deepcopy(dir_list)
+        tl.move_list.append(dir)
+        directions = tl.move_list
+        return
     if new_move in prev_moves:
         return
+    elif new_move[0] > width or new_move[0] < 0:
+        return
+    elif new_move[1] > height or new_move[1] < 0:
+        print('went off edge')
+        return
     else:
-        moves = prev_moves
-        moves.append(new_move)
-        move_list = dir_list
-        move_list.append(dir)
-        thread_color = (random.randint(0,255), random.randint(0,255), random.randint(0,255))
-        start_threads(thread_color, moves, move_list, new_move[0], new_move[1])
+        tl.moves = copy.deepcopy(prev_moves)
+        tl.moves.append(new_move)
+        tl.move_list = copy.deepcopy(dir_list)
+        tl.move_list.append(dir)
         pygame.draw.rect(dis, color, [curr_x, curr_y, 25, 25])
         pygame.display.update()
+        print(len(tl.moves))
+        if len(tl.moves) > 25:
+            return
+        start_threads(color, tl.moves, tl.move_list, new_move[0], new_move[1])
 
 # ~ Gameplay Loop ------------------------------------------------------
 
@@ -166,13 +188,23 @@ while not game_over:
         if event.type == pygame.QUIT:
             game_over = True
         if event.type == MAKESNAKE:
+            print(directions, apple_found)
             if apple_found:
-                print(directions)
-                direction = directions.pop(0)
-                print(threading.active_count())
+                if directions:
+                    direction = directions.pop(0)
+                time.sleep(0.1)
                 make_snake()
+                #pygame.event.post(pygame.USEREVENT + 1)
             else:
-                start_threads((0,255,0), body_pos, [], x_pos, y_pos)
+                thread_color = (random.randint(0,255), random.randint(0,255), random.randint(0,255))
+                direction_list = ['U','D','R','L']
+                for i in direction_list:
+                    if i == direction:
+                        continue
+                    print('current threads: ', threading.active_count())
+                    start_thread(i,thread_color, body_pos, [], x_pos, y_pos)
+                #while not apple_found:
+                #    time.sleep(0.5)
         pygame.display.update()
 pygame.quit()
 quit()
