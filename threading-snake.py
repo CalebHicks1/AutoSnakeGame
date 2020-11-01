@@ -195,16 +195,16 @@ while not game_over:
                     time.sleep(0.1)
                     make_snake()
             else:
-                thread_color = (random.randint(0,255), random.randint(0,255), random.randint(0,255))
+                thread_color = (random.randint(0,235), random.randint(0,235), random.randint(0,235))
                 direction_list = ['U','D','R','L']
                 for i in direction_list:
                     if i == direction:
                         continue
                     start_thread(i,thread_color, body_pos, [], x_pos, y_pos)
-                #while not apple_found:
-                #    time.sleep(0.1)
-                #    if game_over:
-                #        break
+                while not apple_found:
+                    time.sleep(0.1)
+                    if game_over:
+                        break
         pygame.display.update()
 pygame.quit()
 quit()
