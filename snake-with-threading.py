@@ -164,7 +164,6 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         apple_found = True
         tl.move_list = copy.deepcopy(dir_list)
         tl.move_list.append(dir)
-        print(tl.move_list)
         directions = tl.move_list
         pygame.draw.rect(dis, green, [curr_x, curr_y, 25, 25])
         pygame.display.update()
@@ -176,8 +175,8 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         tl.move_list.append(dir)
         pygame.draw.rect(dis, color, [curr_x, curr_y, 25, 25])
         pygame.display.update()
-        if len(tl.moves) > 55:
-            return
+        #if len(tl.moves) > 55:
+        #    return
         start_threads(color, tl.moves, tl.move_list, new_move[0], new_move[1])
 
 # ~ Gameplay Loop ------------------------------------------------------
