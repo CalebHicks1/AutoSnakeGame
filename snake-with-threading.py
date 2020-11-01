@@ -192,7 +192,7 @@ while not game_over:
             if apple_found:
                 if directions:
                     direction = directions.pop(0)
-                    time.sleep(0.25)
+                    time.sleep(0.1)
                     make_snake()
             else:
                 thread_color = (random.randint(0,255), random.randint(0,255), random.randint(0,255))
