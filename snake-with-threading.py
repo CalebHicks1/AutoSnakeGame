@@ -4,7 +4,7 @@ import threading
 import time
 import copy
 
-# ~ Initialize --------------------------------------------------------
+# ~ Initialize Variables --------------------------------------------------------
 
 width = 300
 height = 300
@@ -16,6 +16,7 @@ y_pos = height // 2
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
+green = (0,255,0)
 direction = 'U'
 body_x = []
 body_y = []
@@ -153,18 +154,20 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         new_move = [curr_x+30, curr_y]
     elif dir == 'L':
         new_move = [curr_x-30, curr_y]
-    if new_move == [apple_x, apple_y]:
-        apple_found = True
-        print('found')
-        tl.move_list = copy.deepcopy(dir_list)
-        tl.move_list.append(dir)
-        directions = tl.move_list
-        return
     if new_move in prev_moves:
         return
     elif new_move[0] > width - 30 or new_move[0] < 0:
         return
     elif new_move[1] > height -30 or new_move[1] < 0:
+        return
+    elif new_move == [apple_x, apple_y]:
+        apple_found = True
+        tl.move_list = copy.deepcopy(dir_list)
+        tl.move_list.append(dir)
+        print(tl.move_list)
+        directions = tl.move_list
+        pygame.draw.rect(dis, green, [curr_x, curr_y, 25, 25])
+        pygame.display.update()
         return
     else:
         tl.moves = copy.deepcopy(prev_moves)
@@ -173,8 +176,7 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         tl.move_list.append(dir)
         pygame.draw.rect(dis, color, [curr_x, curr_y, 25, 25])
         pygame.display.update()
-        print('thread length: ', len(tl.move_list))
-        if len(tl.moves) > 25:
+        if len(tl.moves) > 35:
             return
         start_threads(color, tl.moves, tl.move_list, new_move[0], new_move[1])
 
@@ -186,7 +188,6 @@ while not game_over:
         if event.type == pygame.QUIT:
             game_over = True
         if event.type == MAKESNAKE:
-            print(directions, apple_found)
             if apple_found:
                 if directions:
                     direction = directions.pop(0)
@@ -199,7 +200,6 @@ while not game_over:
                 for i in direction_list:
                     if i == direction:
                         continue
-                    print('current threads: ', threading.active_count())
                     start_thread(i,thread_color, body_pos, [], x_pos, y_pos)
                 #while not apple_found:
                 #    time.sleep(0.5)

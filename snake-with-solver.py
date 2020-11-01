@@ -3,8 +3,8 @@ import random
 
 # ~ Initialize --------------------------------------------------------
 
-width = 600
-height = 600
+width = 300
+height = 300
 game_over = False
 MAKESNAKE = pygame.USEREVENT + 1
 timer = pygame.time.set_timer(MAKESNAKE, 100)
