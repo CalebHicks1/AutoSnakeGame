@@ -160,7 +160,7 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         return
     elif new_move[1] > height -30 or new_move[1] < 0:
         return
-    elif new_move == [apple_x, apple_y]:
+    elif [curr_x, curr_y] == [apple_x, apple_y]:
         apple_found = True
         tl.move_list = copy.deepcopy(dir_list)
         tl.move_list.append(dir)
@@ -193,8 +193,8 @@ while not game_over:
             if apple_found:
                 if directions:
                     direction = directions.pop(0)
-                time.sleep(0.25)
-                make_snake()
+                    time.sleep(0.25)
+                    make_snake()
             else:
                 thread_color = (random.randint(0,255), random.randint(0,255), random.randint(0,255))
                 direction_list = ['U','D','R','L']
@@ -212,7 +212,7 @@ quit()
 
 """
 TODO LIST ----------------------
-1. make threads start from head of Snake, not in front
+1. make threads start from head of Snake, not in front (done)
 2, make sure no illegal moves are put into directions
 
 """
