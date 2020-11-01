@@ -90,9 +90,9 @@ def make_snake():
         pygame.draw.rect(dis, white, [x_pos, y_pos, 30, 25])
     elif direction == 'L':
         pygame.draw.rect(dis, white, [x_pos-5, y_pos, 30, 25])
+    move()
     body_x.append(x_pos)
     body_y.append(y_pos)
-    move()
     body_pos.append([x_pos, y_pos])
     if grow_time < 5:
         growing = True
@@ -212,7 +212,7 @@ quit()
 
 """
 TODO LIST ----------------------
-1. make threads start from head of Snake, not in front (done)
-2, make sure no illegal moves are put into directions
+1. make threads account for movement of snake.
+    maybe pop body off as each new thread is made
 
 """
