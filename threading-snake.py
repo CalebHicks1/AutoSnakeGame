@@ -17,9 +17,9 @@ white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
 green = (0,255,0)
-direction = 'U'
-body_x = []
-body_y = []
+direction = ''
+body_x = [width // 2]
+body_y = [height // 2]
 body_pos = []
 growing = True
 grow_time = 0
@@ -40,7 +40,7 @@ pygame.display.update()
 removes piece in snake body specified by x,y
 """
 def remove_tail(x : int, y : int):
-    pygame.draw.rect(dis, black, [x,y,30,30])
+    pygame.draw.rect(dis, black, [x-5,y-5,30,30])
 
 """
 moves snake head based on direction variable. sets game_over
@@ -201,10 +201,10 @@ while not game_over:
                     if i == direction:
                         continue
                     start_thread(i,thread_color, body_pos, [], x_pos, y_pos)
-                while not apple_found:
-                    time.sleep(0.1)
-                    if game_over:
-                        break
+                #while not apple_found:
+                #    time.sleep(0.1)
+                #    if game_over:
+                #        break
         pygame.display.update()
 pygame.quit()
 quit()
