@@ -92,8 +92,8 @@ def make_snake():
         pygame.draw.rect(dis, white, [x_pos-5, y_pos, 30, 25])
     body_x.append(x_pos)
     body_y.append(y_pos)
-    body_pos.append([x_pos, y_pos])
     move()
+    body_pos.append([x_pos, y_pos])
     if grow_time < 5:
         growing = True
         grow_time += 1
@@ -176,13 +176,15 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         tl.move_list.append(dir)
         pygame.draw.rect(dis, color, [curr_x, curr_y, 25, 25])
         pygame.display.update()
-        if len(tl.moves) > 35:
+        if len(tl.moves) > 55:
             return
         start_threads(color, tl.moves, tl.move_list, new_move[0], new_move[1])
 
 # ~ Gameplay Loop ------------------------------------------------------
 
 move_apple()
+pygame.display.update()
+time.sleep(0.7)
 while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -191,9 +193,8 @@ while not game_over:
             if apple_found:
                 if directions:
                     direction = directions.pop(0)
-                time.sleep(0.1)
+                time.sleep(0.25)
                 make_snake()
-                #pygame.event.post(pygame.USEREVENT + 1)
             else:
                 thread_color = (random.randint(0,255), random.randint(0,255), random.randint(0,255))
                 direction_list = ['U','D','R','L']
@@ -201,8 +202,17 @@ while not game_over:
                     if i == direction:
                         continue
                     start_thread(i,thread_color, body_pos, [], x_pos, y_pos)
-                #while not apple_found:
-                #    time.sleep(0.5)
+                while not apple_found:
+                    time.sleep(0.1)
+                    if game_over:
+                        break
         pygame.display.update()
 pygame.quit()
 quit()
+
+"""
+TODO LIST ----------------------
+1. make threads start from head of Snake, not in front
+2, make sure no illegal moves are put into directions
+
+"""
