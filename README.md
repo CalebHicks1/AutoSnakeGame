@@ -1,5 +1,5 @@
 # AutoSnakeGame
-A classic snake game, it's supposed to play itself.
+A classic snake game designed to play itself.
 
 FILES:
 
