@@ -4,10 +4,16 @@ import threading
 import time
 import copy
 
-# ~ Initialize Variables --------------------------------------------------------
+# ~ Initialize Variables and Window --------------------------------------------------------
 
 width = 300
 height = 300
+
+pygame.init()
+dis = pygame.display.set_mode((width,height))
+pygame.display.set_caption('Snake Game by Caleb')
+pygame.display.update()
+
 game_over = False
 MAKESNAKE = pygame.USEREVENT + 1
 timer = pygame.time.set_timer(MAKESNAKE, 150)
@@ -29,10 +35,7 @@ apple_found = False
 directions = []
 tl = threading.local()
 
-pygame.init()
-dis = pygame.display.set_mode((width,height))
-pygame.display.set_caption('Snake Game by Caleb')
-pygame.display.update()
+
 
 # ~ Helper Functions ---------------------------------------------------
 
@@ -175,8 +178,9 @@ def thread_action(dir, prev_moves, dir_list, curr_x, curr_y, color):
         tl.move_list.append(dir)
         pygame.draw.rect(dis, color, [curr_x, curr_y, 25, 25])
         pygame.display.update()
-        #if len(tl.moves) > 55:
-        #    return
+        if len(tl.moves) > 50:
+            return
+        #Pop move from the back to account for snake moving.
         start_threads(color, tl.moves, tl.move_list, new_move[0], new_move[1])
 
 # ~ Gameplay Loop ------------------------------------------------------
